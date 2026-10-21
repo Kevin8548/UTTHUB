@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 import '../../core/theme/app_theme.dart';
 
 class _MockEvent {
@@ -82,6 +83,46 @@ class StartScreen extends StatelessWidget {
                   ),
                 );
               },
+            ),
+          ),
+          const SizedBox(height: 28),
+          // Sección de Mini Calendario (HU09)
+          Text('CALENDARIO', style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 10),
+          Container(
+            decoration: BoxDecoration(
+              color: colors.surface,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: colors.border),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: TableCalendar(
+              locale: 'es_MX',
+              firstDay: DateTime.utc(2024, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: DateTime.now(),
+              headerStyle: const HeaderStyle(
+                formatButtonVisible: false,
+                titleCentered: true,
+              ),
+              calendarFormat: CalendarFormat.month,
+              eventLoader: (day) =>
+                  _mockEvents.where((e) => isSameDay(e.date, day)).toList(),
+              calendarStyle: CalendarStyle(
+                outsideDaysVisible: false,
+                markerDecoration: BoxDecoration(
+                  color: colors.emerald,
+                  shape: BoxShape.circle,
+                ),
+                todayDecoration: BoxDecoration(
+                  color: colors.emeraldDim,
+                  shape: BoxShape.circle,
+                ),
+                selectedDecoration: BoxDecoration(
+                  color: colors.emerald,
+                  shape: BoxShape.circle,
+                ),
+              ),
             ),
           ),
         ],
