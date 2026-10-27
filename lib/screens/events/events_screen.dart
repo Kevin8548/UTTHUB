@@ -195,6 +195,44 @@ class _EventsScreenState extends State<EventsScreen> {
     }
   }
 
+  Future<void> _confirmDelete(BuildContext context, EventModel event) async {
+    final colors = context.colors;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        backgroundColor: colors.surface,
+        title: Text(
+          '¿Eliminar evento?',
+          style: TextStyle(color: colors.textPrimary),
+        ),
+        content: Text(
+          '¿Estás seguro de eliminar el evento "${event.title}"?',
+          style: TextStyle(color: colors.textMuted),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
+            onPressed: () => Navigator.pop(dialogCtx, true),
+            child: const Text('Eliminar', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      await context.read<EventsProvider>().removeEvent(event.id);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Evento eliminado')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final eventsProvider = context.watch<EventsProvider>();
@@ -256,11 +294,17 @@ class _EventsScreenState extends State<EventsScreen> {
                             ],
                           ),
                         ),
-                        // Botón de edición (HU16)
+                        // Botón de edición
                         IconButton(
                           icon: Icon(Icons.edit_outlined, color: colors.textMuted, size: 20),
                           tooltip: 'Editar evento',
                           onPressed: () => _showEditEventDialog(context, event),
+                        ),
+                        // Botón de eliminación (HU17)
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+                          tooltip: 'Eliminar evento',
+                          onPressed: () => _confirmDelete(context, event),
                         ),
                       ],
                     ),
