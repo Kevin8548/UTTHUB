@@ -261,6 +261,8 @@ class _EventsScreenState extends State<EventsScreen> {
                 separatorBuilder: (_, __) => const SizedBox(height: 12),
                 itemBuilder: (context, index) {
                   final event = eventsProvider.events[index];
+                  final notified = eventsProvider.isNotified(event.id);
+
                   return Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -294,13 +296,22 @@ class _EventsScreenState extends State<EventsScreen> {
                             ],
                           ),
                         ),
+                        // Botón de notificación (HU18)
+                        IconButton(
+                          icon: Icon(
+                            notified ? Icons.notifications_active : Icons.notifications_none,
+                            color: notified ? colors.emerald : colors.textMuted,
+                          ),
+                          tooltip: notified ? 'Silenciar recordatorio' : 'Activar recordatorio',
+                          onPressed: () => eventsProvider.toggleNotify(event),
+                        ),
                         // Botón de edición
                         IconButton(
                           icon: Icon(Icons.edit_outlined, color: colors.textMuted, size: 20),
                           tooltip: 'Editar evento',
                           onPressed: () => _showEditEventDialog(context, event),
                         ),
-                        // Botón de eliminación (HU17)
+                        // Botón de eliminación
                         IconButton(
                           icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
                           tooltip: 'Eliminar evento',
