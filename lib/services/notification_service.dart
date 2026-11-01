@@ -39,7 +39,11 @@ class NotificationService {
   }) {
     final tzDate = tz.TZDateTime.from(scheduledDate, tz.local);
     if (!tzDate.isAfter(tz.TZDateTime.now(tz.local))) {
+<<<<<<< HEAD
       return Future.value(); // la fecha ya pasó, no se programa nada
+=======
+      return Future.value();
+>>>>>>> origin/Develop
     }
     return _zonedSchedule(
       id: id,
@@ -49,12 +53,19 @@ class NotificationService {
     );
   }
 
+<<<<<<< HEAD
   /// Se repite cada semana el mismo día y hora (para el horario de clases).
+=======
+>>>>>>> origin/Develop
   Future<void> scheduleWeeklyNotification({
     required int id,
     required String title,
     required String body,
+<<<<<<< HEAD
     required int weekday, // 1 = lunes ... 7 = domingo
+=======
+    required int weekday,
+>>>>>>> origin/Develop
     required int hour,
     required int minute,
   }) {
@@ -113,7 +124,10 @@ class NotificationService {
         matchDateTimeComponents: matchDateTimeComponents,
       );
     } catch (_) {
+<<<<<<< HEAD
       // Si no se otorgó el permiso de alarmas exactas, cae a modo inexacto.
+=======
+>>>>>>> origin/Develop
       await _plugin.zonedSchedule(
         id,
         title,
