@@ -47,11 +47,14 @@ class EventsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleNotify(EventModel event) async {
+  Future<bool> toggleNotify(EventModel event) async {
+    final willEnable = !_notified.contains(event.id);
     if (_notified.contains(event.id)) {
+      // HU19: Cancelar y desmarcar
       await _notificationService.cancelNotification(event.id.hashCode);
       _notified.remove(event.id);
     } else {
+      // HU18: Agendar notificación
       await _notificationService.scheduleNotification(
         id: event.id.hashCode,
         title: event.title,
@@ -61,6 +64,7 @@ class EventsProvider extends ChangeNotifier {
       _notified.add(event.id);
     }
     notifyListeners();
+    return willEnable;
   }
 
   String _formatDate(DateTime date) =>
