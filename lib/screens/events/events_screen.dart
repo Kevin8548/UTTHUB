@@ -296,14 +296,28 @@ class _EventsScreenState extends State<EventsScreen> {
                             ],
                           ),
                         ),
-                        // Botón de notificación (HU18)
+                        // Botón de activación / desactivación de notificación (HU18 y HU19)
                         IconButton(
                           icon: Icon(
                             notified ? Icons.notifications_active : Icons.notifications_none,
                             color: notified ? colors.emerald : colors.textMuted,
                           ),
-                          tooltip: notified ? 'Silenciar recordatorio' : 'Activar recordatorio',
-                          onPressed: () => eventsProvider.toggleNotify(event),
+                          tooltip: notified ? 'Desactivar notificación' : 'Activar notificación',
+                          onPressed: () async {
+                            final enabled = await context.read<EventsProvider>().toggleNotify(event);
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    enabled
+                                        ? 'Recordatorio activado: 1h antes del evento'
+                                        : 'Recordatorio cancelado',
+                                  ),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          },
                         ),
                         // Botón de edición
                         IconButton(
