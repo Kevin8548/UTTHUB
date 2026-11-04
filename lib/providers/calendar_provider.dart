@@ -13,35 +13,10 @@ class CalendarProvider extends ChangeNotifier {
   List<CalendarEventModel> get events => _events;
   bool get isLoading => _isLoading;
 
-  List<CalendarEventModel> eventsForDay(DateTime day) {
-    return _events
-        .where(
-          (e) =>
-              e.date.year == day.year &&
-              e.date.month == day.month &&
-              e.date.day == day.day,
-        )
-        .toList();
-  }
-
-  bool hasEventsOnDay(DateTime day) {
-    return _events.any(
-      (e) =>
-          e.date.year == day.year &&
-          e.date.month == day.month &&
-          e.date.day == day.day,
-    );
-  }
-
   Future<void> loadEvents() async {
     _isLoading = true;
     notifyListeners();
     _events = await _storageService.getCalendarEvents();
-    for (final event in _events) {
-      if (event.notifyEnabled && event.date.isAfter(DateTime.now())) {
-        await _scheduleFor(event);
-      }
-    }
     _isLoading = false;
     notifyListeners();
   }
@@ -55,25 +30,6 @@ class CalendarProvider extends ChangeNotifier {
     _events = [..._events, event]..sort((a, b) => a.date.compareTo(b.date));
     await _storageService.saveCalendarEvents(_events);
     await _scheduleFor(event);
-    notifyListeners();
-  }
-
-  Future<void> updateEvent({
-    required CalendarEventModel event,
-    required String newTitle,
-    required DateTime newDate,
-  }) async {
-    final updated = event.copyWith(
-      title: newTitle,
-      date: newDate,
-    );
-    _events = _events.map((e) => e.id == event.id ? updated : e).toList()
-      ..sort((a, b) => a.date.compareTo(b.date));
-    await _storageService.saveCalendarEvents(_events);
-    if (updated.notifyEnabled) {
-      await _notificationService.cancelNotification(event.id.hashCode);
-      await _scheduleFor(updated);
-    }
     notifyListeners();
   }
 

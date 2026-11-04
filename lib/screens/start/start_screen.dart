@@ -86,7 +86,6 @@ class StartScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 28),
-          // Sección de Mini Calendario (HU09)
           Text('CALENDARIO', style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 10),
           Container(
