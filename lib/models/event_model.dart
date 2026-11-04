@@ -12,4 +12,20 @@ class EventModel {
     required this.date,
     required this.location,
   });
+
+  EventModel copyWith({
+    String? id,
+    String? title,
+    String? description,
+    DateTime? date,
+    String? location,
+  }) {
+    return EventModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      date: date ?? this.date,
+      location: location ?? this.location,
+    );
+  }
 }
