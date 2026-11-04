@@ -6,9 +6,8 @@ class AuthService {
     required String password,
   }) async {
     await Future.delayed(const Duration(milliseconds: 600));
-    // Simulación de autenticación UTT
     return UserModel(
-      id: '1',
+      id: '20230145',
       name: 'Kevin Pérez',
       email: email,
       career: 'Ingeniería en Tecnologías de la Información',
@@ -18,11 +17,16 @@ class AuthService {
   Future<UserModel> getCurrentUser() async {
     await Future.delayed(const Duration(milliseconds: 300));
     return const UserModel(
-      id: '1',
+      id: '20230145',
       name: 'Kevin Pérez',
       email: 'kevin.perez@utt.edu.mx',
       career: 'Ingeniería en Tecnologías de la Información',
     );
+  }
+
+  Future<bool> requestPasswordReset({required String email}) async {
+    await Future.delayed(const Duration(milliseconds: 600));
+    return true;
   }
 
   Future<bool> changePassword({

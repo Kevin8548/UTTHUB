@@ -51,6 +51,13 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> logout() async {
+    _user = null;
+    _photoPath = null;
+    _error = null;
+    notifyListeners();
+  }
+
   Future<void> pickProfilePhoto({required ImageSource source}) async {
     final picked = await _picker.pickImage(source: source, imageQuality: 80);
     if (picked == null) return;
