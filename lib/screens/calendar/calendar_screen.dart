@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -18,14 +19,19 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+
   final GlobalKey<_DynamicCalendarTabState> _personalKey = GlobalKey();
   final GlobalKey<_OfficialCalendarTabState> _officialKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+
     _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(() => setState(() {}));
+    _tabController.addListener(() {
+      if (mounted) setState(() {});
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CalendarProvider>().loadEvents();
     });
@@ -74,9 +80,13 @@ class _CalendarScreenState extends State<CalendarScreen>
         child: const Icon(Icons.add, color: Colors.black),
       );
     }
+
     return Consumer<AdminProvider>(
       builder: (context, adminProvider, _) {
-        if (!adminProvider.isAdminMode) return const SizedBox.shrink();
+        if (!adminProvider.isAdminMode) {
+          return const SizedBox.shrink();
+        }
+
         return FloatingActionButton(
           backgroundColor: colors.amber,
           onPressed: () => _officialKey.currentState?.addRangeDialog(),
@@ -93,7 +103,8 @@ class _DynamicCalendarTab extends StatefulWidget {
   const _DynamicCalendarTab({super.key});
 
   @override
-  State<_DynamicCalendarTab> createState() => _DynamicCalendarTabState();
+  State<_DynamicCalendarTab> createState() =>
+      _DynamicCalendarTabState();
 }
 
 class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
@@ -110,12 +121,17 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         backgroundColor: colors.surface,
-        title: Text('Nueva fecha', style: TextStyle(color: colors.textPrimary)),
+        title: Text(
+          'Nueva fecha',
+          style: TextStyle(color: colors.textPrimary),
+        ),
         content: TextField(
           controller: controller,
           autofocus: true,
           style: TextStyle(color: colors.textPrimary),
-          decoration: const InputDecoration(hintText: 'Ej. Examen de Redes'),
+          decoration: const InputDecoration(
+            hintText: 'Ej. Examen de Redes',
+          ),
         ),
         actions: [
           TextButton(
@@ -123,7 +139,10 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
             child: const Text('Cancelar'),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, controller.text),
+            onPressed: () => Navigator.pop(
+              dialogContext,
+              controller.text,
+            ),
             child: const Text('Siguiente'),
           ),
         ],
@@ -155,7 +174,6 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
     );
   }
 
-  // Confirmar antes de eliminar una fecha personal
   Future<void> _confirmDeleteEvent(
     BuildContext sheetContext,
     dynamic event,
@@ -172,7 +190,8 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
           style: TextStyle(color: colors.textPrimary),
         ),
         content: Text(
-          '¿Estás seguro de que deseas eliminar "${event.title}"? Esta acción no se puede deshacer.',
+          '¿Estás seguro de que deseas eliminar '
+          '"${event.title}"? Esta acción no se puede deshacer.',
           style: TextStyle(color: colors.textMuted),
         ),
         actions: [
@@ -204,7 +223,8 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
   Future<void> _showDayDetails(DateTime day) async {
     final colors = context.colors;
     final calendarProvider = context.read<CalendarProvider>();
-    final schoolCalendarProvider = context.read<SchoolCalendarProvider>();
+    final schoolCalendarProvider =
+        context.read<SchoolCalendarProvider>();
 
     final personalEvents = calendarProvider.events
         .where((e) => isSameDay(e.date, day))
@@ -218,7 +238,9 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
       context: context,
       backgroundColor: colors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
       ),
       builder: (sheetContext) {
         return SafeArea(
@@ -256,22 +278,28 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
                             children: [
                               Text(
                                 event.title,
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(color: colors.textPrimary),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: colors.textPrimary,
+                                    ),
                               ),
                               Text(
-                                '${event.date.hour.toString().padLeft(2, '0')}:${event.date.minute.toString().padLeft(2, '0')}',
-                                style: Theme.of(context).textTheme.bodySmall,
+                                '${event.date.hour.toString().padLeft(2, '0')}:'
+                                '${event.date.minute.toString().padLeft(2, '0')}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall,
                               ),
                             ],
                           ),
                         ),
-
-                        // Activar o desactivar notificaciones
                         IconButton(
                           icon: Icon(
                             event.notifyEnabled
@@ -286,8 +314,6 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
                             calendarProvider.toggleNotify(event);
                           },
                         ),
-
-                        // Eliminar fecha con confirmación
                         IconButton(
                           tooltip: 'Eliminar fecha',
                           icon: const Icon(
@@ -323,8 +349,12 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
                         Expanded(
                           child: Text(
                             '${mark.type.label} (oficial)',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: colors.textMuted),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: colors.textMuted,
+                                ),
                           ),
                         ),
                       ],
@@ -355,7 +385,8 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
   @override
   Widget build(BuildContext context) {
     final calendarProvider = context.watch<CalendarProvider>();
-    final schoolCalendarProvider = context.watch<SchoolCalendarProvider>();
+    final schoolCalendarProvider =
+        context.watch<SchoolCalendarProvider>();
     final colors = context.colors;
 
     return SafeArea(
@@ -448,6 +479,33 @@ class _DynamicCalendarTabState extends State<_DynamicCalendarTab> {
 
           const SizedBox(height: 12),
 
+          // Botón visual para subir archivos (sin funcionalidad real).
+          OutlinedButton.icon(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Función próximamente disponible',
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            icon: const Icon(Icons.cloud_upload_outlined),
+            label: const Text('Subir archivo'),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 14,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
           Material(
             color: colors.surface,
             clipBehavior: Clip.antiAlias,
@@ -490,15 +548,18 @@ class _OfficialCalendarTab extends StatefulWidget {
   const _OfficialCalendarTab({super.key});
 
   @override
-  State<_OfficialCalendarTab> createState() => _OfficialCalendarTabState();
+  State<_OfficialCalendarTab> createState() =>
+      _OfficialCalendarTabState();
 }
 
-class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
+class _OfficialCalendarTabState
+    extends State<_OfficialCalendarTab> {
   DateTime _focusedDay = DateTime(2025, 9, 1);
 
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SchoolCalendarProvider>().loadMarks();
     });
@@ -506,7 +567,8 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
 
   Future<void> _addMarkDialog(DateTime day) async {
     final colors = context.colors;
-    SchoolCalendarMarkType selectedType = SchoolCalendarMarkType.ordinaryEval;
+    SchoolCalendarMarkType selectedType =
+        SchoolCalendarMarkType.ordinaryEval;
     final noteController = TextEditingController();
 
     final confirmed = await showDialog<bool>(
@@ -542,7 +604,9 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
                         Flexible(
                           child: Text(
                             type.label,
-                            style: TextStyle(color: colors.textPrimary),
+                            style: TextStyle(
+                              color: colors.textPrimary,
+                            ),
                           ),
                         ),
                       ],
@@ -559,7 +623,9 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
               TextField(
                 controller: noteController,
                 style: TextStyle(color: colors.textPrimary),
-                decoration: const InputDecoration(hintText: 'Nota (opcional)'),
+                decoration: const InputDecoration(
+                  hintText: 'Nota (opcional)',
+                ),
               ),
             ],
           ),
@@ -594,7 +660,8 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
     final colors = context.colors;
     DateTime? startDate;
     DateTime? endDate;
-    SchoolCalendarMarkType selectedType = SchoolCalendarMarkType.vacation;
+    SchoolCalendarMarkType selectedType =
+        SchoolCalendarMarkType.vacation;
     final noteController = TextEditingController();
 
     await showDialog<void>(
@@ -666,7 +733,9 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
                           Flexible(
                             child: Text(
                               type.label,
-                              style: TextStyle(color: colors.textPrimary),
+                              style: TextStyle(
+                                color: colors.textPrimary,
+                              ),
                             ),
                           ),
                         ],
@@ -696,19 +765,23 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
               child: const Text('Cancelar'),
             ),
             FilledButton(
-              onPressed:
-                  (startDate != null &&
-                      endDate != null &&
-                      !endDate!.isBefore(startDate!))
+              onPressed: (
+                startDate != null &&
+                endDate != null &&
+                !endDate!.isBefore(startDate!)
+              )
                   ? () {
-                      context.read<SchoolCalendarProvider>().addMarkRange(
-                        start: startDate!,
-                        end: endDate!,
-                        type: selectedType,
-                        note: noteController.text.trim().isEmpty
-                            ? null
-                            : noteController.text.trim(),
-                      );
+                      context
+                          .read<SchoolCalendarProvider>()
+                          .addMarkRange(
+                            start: startDate!,
+                            end: endDate!,
+                            type: selectedType,
+                            note: noteController.text.trim().isEmpty
+                                ? null
+                                : noteController.text.trim(),
+                          );
+
                       Navigator.pop(dialogContext);
                     }
                   : null,
@@ -724,15 +797,19 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
 
   Future<void> _showDayDetails(DateTime day) async {
     final colors = context.colors;
-    final schoolCalendarProvider = context.read<SchoolCalendarProvider>();
+    final schoolCalendarProvider =
+        context.read<SchoolCalendarProvider>();
     final adminProvider = context.read<AdminProvider>();
+
     final dayMarks = schoolCalendarProvider.marksForDay(day);
 
     await showModalBottomSheet(
       context: context,
       backgroundColor: colors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
       ),
       builder: (sheetContext) {
         return SafeArea(
@@ -770,12 +847,17 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   mark.type.label,
-                                  style: Theme.of(context).textTheme.bodyMedium
-                                      ?.copyWith(color: colors.textPrimary),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: colors.textPrimary,
+                                      ),
                                 ),
                                 if (mark.note != null)
                                   Text(
@@ -795,7 +877,8 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
                                 size: 20,
                               ),
                               onPressed: () {
-                                schoolCalendarProvider.removeMark(mark);
+                                schoolCalendarProvider
+                                    .removeMark(mark);
                                 Navigator.pop(sheetContext);
                               },
                             ),
@@ -826,7 +909,10 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
     );
   }
 
-  Widget _buildLegend(BuildContext context, AppColorScheme colors) {
+  Widget _buildLegend(
+    BuildContext context,
+    AppColorScheme colors,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -837,7 +923,10 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('LEYENDA', style: Theme.of(context).textTheme.bodySmall),
+          Text(
+            'LEYENDA',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           const SizedBox(height: 12),
           GridView.count(
             crossAxisCount: 2,
@@ -861,8 +950,12 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
                   Expanded(
                     child: Text(
                       type.label,
-                      style: Theme.of(context).textTheme.bodySmall
-                          ?.copyWith(color: colors.textPrimary),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(
+                            color: colors.textPrimary,
+                          ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -878,7 +971,8 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
 
   @override
   Widget build(BuildContext context) {
-    final schoolCalendarProvider = context.watch<SchoolCalendarProvider>();
+    final schoolCalendarProvider =
+        context.watch<SchoolCalendarProvider>();
     final adminProvider = context.watch<AdminProvider>();
     final colors = context.colors;
 
@@ -902,6 +996,7 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
                 setState(() => _focusedDay = focused);
               },
               onDaySelected: (selected, focused) {
+                setState(() => _focusedDay = focused);
                 _showDayDetails(selected);
               },
               headerStyle: const HeaderStyle(
@@ -910,7 +1005,8 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
               ),
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, day, focusedDay) {
-                  final dayMarks = schoolCalendarProvider.marksForDay(day);
+                  final dayMarks =
+                      schoolCalendarProvider.marksForDay(day);
 
                   if (dayMarks.isEmpty) return null;
 
@@ -956,6 +1052,8 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
   }
 }
 
+// ---------- SELECTOR DE RANGO ----------
+
 class _RangeDateTile extends StatelessWidget {
   final String label;
   final DateTime? date;
@@ -975,14 +1073,21 @@ class _RangeDateTile extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 10,
+        ),
         decoration: BoxDecoration(
           border: Border.all(color: colors.border),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           children: [
-            Icon(Icons.calendar_today, size: 16, color: colors.textMuted),
+            Icon(
+              Icons.calendar_today,
+              size: 16,
+              color: colors.textMuted,
+            ),
             const SizedBox(width: 8),
             Text(
               date == null

@@ -74,4 +74,8 @@ class UserProvider extends ChangeNotifier {
       newPassword: newPassword,
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
