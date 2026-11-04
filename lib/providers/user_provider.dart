@@ -1,7 +1,10 @@
+
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import '../services/storage_service.dart';
@@ -21,11 +24,19 @@ class UserProvider extends ChangeNotifier {
   String? get error => _error;
   String? get photoPath => _photoPath;
 
-  Future<void> login({required String email, required String password}) async {
+  Future<void> login({
+    required String email,
+    required String password,
+  }) async {
     _isLoading = true;
     notifyListeners();
+
     try {
-      _user = await _authService.login(email: email, password: password);
+      _user = await _authService.login(
+        email: email,
+        password: password,
+      );
+
       _photoPath = await _storageService.getPhotoPath();
       _error = null;
     } catch (_) {
@@ -39,6 +50,7 @@ class UserProvider extends ChangeNotifier {
   Future<void> loadUser() async {
     _isLoading = true;
     notifyListeners();
+
     try {
       _user = await _authService.getCurrentUser();
       _photoPath = await _storageService.getPhotoPath();
@@ -51,17 +63,26 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> pickProfilePhoto({required ImageSource source}) async {
-    final picked = await _picker.pickImage(source: source, imageQuality: 80);
+  Future<void> pickProfilePhoto({
+    required ImageSource source,
+  }) async {
+    final picked = await _picker.pickImage(
+      source: source,
+      imageQuality: 80,
+    );
+
     if (picked == null) return;
 
     final directory = await getApplicationDocumentsDirectory();
-    final savedImage = await File(
-      picked.path,
-    ).copy('${directory.path}/profile_photo.jpg');
+
+    final savedImage = await File(picked.path).copy(
+      '${directory.path}/profile_photo.jpg',
+    );
 
     _photoPath = savedImage.path;
+
     await _storageService.savePhotoPath(_photoPath!);
+
     notifyListeners();
   }
 
@@ -74,8 +95,4 @@ class UserProvider extends ChangeNotifier {
       newPassword: newPassword,
     );
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631

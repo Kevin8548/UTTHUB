@@ -1,3 +1,4 @@
+
 class UserModel {
   final String id;
   final String name;
@@ -10,8 +11,4 @@ class UserModel {
     required this.email,
     required this.career,
   });
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631

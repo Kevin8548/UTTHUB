@@ -1,3 +1,4 @@
+
 import '../models/user_model.dart';
 
 class AuthService {
@@ -5,12 +6,11 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 600));
-<<<<<<< HEAD
-    // Simulación de autenticación UTT
-=======
-    // Mock: acepta cualquier credencial mientras no haya backend real
->>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
+    await Future.delayed(
+      const Duration(milliseconds: 600),
+    );
+
+    // Simulación de autenticación UTT.
     return UserModel(
       id: '1',
       name: 'Kevin Pérez',
@@ -20,7 +20,10 @@ class AuthService {
   }
 
   Future<UserModel> getCurrentUser() async {
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future.delayed(
+      const Duration(milliseconds: 300),
+    );
+
     return const UserModel(
       id: '1',
       name: 'Kevin Pérez',
@@ -33,11 +36,10 @@ class AuthService {
     required String currentPassword,
     required String newPassword,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(
+      const Duration(milliseconds: 500),
+    );
+
     return true;
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
