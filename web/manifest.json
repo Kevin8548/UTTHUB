@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
     "name": "utthub",
     "short_name": "utthub",
+=======
+    "name": "utt_app",
+    "short_name": "utt_app",
+>>>>>>> bda2726 (1.0 | First version)
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

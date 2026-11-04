@@ -43,6 +43,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+<<<<<<< HEAD
 
 # Widget Preview related
 .widget_preview/
+=======
+>>>>>>> bda2726 (1.0 | First version)

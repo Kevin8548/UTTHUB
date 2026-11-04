@@ -51,6 +51,7 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+<<<<<<< HEAD
   Future<void> logout() async {
     _user = null;
     _photoPath = null;
@@ -58,6 +59,8 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+=======
+>>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
   Future<void> pickProfilePhoto({required ImageSource source}) async {
     final picked = await _picker.pickImage(source: source, imageQuality: 80);
     if (picked == null) return;
@@ -81,4 +84,8 @@ class UserProvider extends ChangeNotifier {
       newPassword: newPassword,
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
