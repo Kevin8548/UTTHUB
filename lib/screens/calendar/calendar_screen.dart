@@ -1,90 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+
 import '../../core/theme/app_theme.dart';
 import '../../providers/calendar_provider.dart';
 import '../../providers/school_calendar_provider.dart';
 import '../../providers/admin_provider.dart';
 import '../../models/school_calendar_mark_model.dart';
-
-class CalendarScreen extends StatefulWidget {
-  const CalendarScreen({super.key});
-
-  @override
-  State<CalendarScreen> createState() => _CalendarScreenState();
-}
-
-class _CalendarScreenState extends State<CalendarScreen>
-    with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
-  final GlobalKey<_DynamicCalendarTabState> _personalKey = GlobalKey();
-  final GlobalKey<_OfficialCalendarTabState> _officialKey = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(() => setState(() {}));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CalendarProvider>().loadEvents();
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Calendario'),
-        bottom: TabBar(
-          controller: _tabController,
-          labelColor: colors.emerald,
-          unselectedLabelColor: colors.textMuted,
-          indicatorColor: colors.emerald,
-          tabs: const [
-            Tab(text: 'Mis fechas'),
-            Tab(text: 'Oficial'),
-          ],
-        ),
-      ),
-      floatingActionButton: _buildFab(colors),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _DynamicCalendarTab(key: _personalKey),
-          _OfficialCalendarTab(key: _officialKey),
-        ],
-      ),
-    );
-  }
-
-  Widget? _buildFab(AppColorScheme colors) {
-    if (_tabController.index == 0) {
-      return FloatingActionButton(
-        backgroundColor: colors.emerald,
-        onPressed: () => _personalKey.currentState?.openAddDialog(),
-        child: const Icon(Icons.add, color: Colors.black),
-      );
-    }
-    return Consumer<AdminProvider>(
-      builder: (context, adminProvider, _) {
-        if (!adminProvider.isAdminMode) return const SizedBox.shrink();
-        return FloatingActionButton(
-          backgroundColor: colors.amber,
-          onPressed: () => _officialKey.currentState?.addRangeDialog(),
-          child: const Icon(Icons.date_range, color: Colors.black),
-        );
-      },
-    );
-  }
-}
 
 // ---------- MIS FECHAS ----------
 
@@ -692,9 +614,9 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
                                 if (mark.note != null)
                                   Text(
                                     mark.note!,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall,
                                   ),
                               ],
                             ),
@@ -772,9 +694,8 @@ class _OfficialCalendarTabState extends State<_OfficialCalendarTab> {
                   Expanded(
                     child: Text(
                       type.label,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colors.textPrimary,
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall
+                          ?.copyWith(color: colors.textPrimary),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
