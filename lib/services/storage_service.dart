@@ -1,20 +1,16 @@
 import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/calendar_event_model.dart';
 import '../models/school_calendar_mark_model.dart';
-import '../models/schedule_item_model.dart';
-import '../models/subject_model.dart';
 import '../data/mock_school_calendar_marks.dart';
-import '../data/mock_schedule.dart';
-import '../data/mock_subjects.dart';
 
 class StorageService {
   static const _photoPathKey = 'user_photo_path';
   static const _calendarEventsKey = 'calendar_events';
   static const _isDarkModeKey = 'is_dark_mode';
   static const _schoolMarksKey = 'school_calendar_marks';
-  static const _scheduleItemsKey = 'schedule_items';
-  static const _subjectsKey = 'subjects';
 
   Future<String?> getPhotoPath() async {
     final prefs = await SharedPreferences.getInstance();
@@ -106,77 +102,5 @@ class StorageService {
           .toList(),
     );
     await prefs.setString(_schoolMarksKey, raw);
-  }
-
-  Future<List<ScheduleItemModel>> getScheduleItems() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_scheduleItemsKey);
-    if (raw == null) return mockSchedule;
-
-    final list = jsonDecode(raw) as List;
-    return list
-        .map(
-          (item) => ScheduleItemModel(
-            id: item['id'],
-            groupId: item['groupId'],
-            subject: item['subject'],
-            professor: item['professor'],
-            day: WeekDay.values.byName(item['day']),
-            startTime: item['startTime'],
-            endTime: item['endTime'],
-            classroom: item['classroom'],
-          ),
-        )
-        .toList();
-  }
-
-  Future<void> saveScheduleItems(List<ScheduleItemModel> items) async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = jsonEncode(
-      items
-          .map(
-            (i) => {
-              'id': i.id,
-              'groupId': i.groupId,
-              'subject': i.subject,
-              'professor': i.professor,
-              'day': i.day.name,
-              'startTime': i.startTime,
-              'endTime': i.endTime,
-              'classroom': i.classroom,
-            },
-          )
-          .toList(),
-    );
-    await prefs.setString(_scheduleItemsKey, raw);
-  }
-
-  Future<List<SubjectModel>> getSubjects() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_subjectsKey);
-    if (raw == null) return mockSubjects;
-
-    final list = jsonDecode(raw) as List;
-    return list
-        .map(
-          (item) => SubjectModel(
-            id: item['id'],
-            name: item['name'],
-            cuatrimestre: item['cuatrimestre'],
-          ),
-        )
-        .toList();
-  }
-
-  Future<void> saveSubjects(List<SubjectModel> subjects) async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = jsonEncode(
-      subjects
-          .map(
-            (s) => {'id': s.id, 'name': s.name, 'cuatrimestre': s.cuatrimestre},
-          )
-          .toList(),
-    );
-    await prefs.setString(_subjectsKey, raw);
   }
 }

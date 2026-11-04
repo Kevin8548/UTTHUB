@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../widgets/bottom_nav_bar.dart';
 import '../start/start_screen.dart';
-import '../events/events_screen.dart';
-import '../schedule/schedule_screen.dart';
 import '../calendar/calendar_screen.dart';
-import '../subjects/subjects_screen.dart';
 import '../user/user_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,14 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  final _screens = const [
-    StartScreen(),
-    EventsScreen(),
-    ScheduleScreen(),
-    CalendarScreen(),
-    SubjectsScreen(),
-    UserScreen(),
-  ];
+  final _screens = const [StartScreen(), CalendarScreen(), UserScreen()];
 
   final _items = const [
     NavItem(icon: Icons.home_outlined, activeIcon: Icons.home),
