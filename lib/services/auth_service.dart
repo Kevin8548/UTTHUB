@@ -6,7 +6,11 @@ class AuthService {
     required String password,
   }) async {
     await Future.delayed(const Duration(milliseconds: 600));
+<<<<<<< HEAD
     // Simulación de autenticación UTT
+=======
+    // Mock: acepta cualquier credencial mientras no haya backend real
+>>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
     return UserModel(
       id: '1',
       name: 'Kevin Pérez',
@@ -32,4 +36,8 @@ class AuthService {
     await Future.delayed(const Duration(milliseconds: 500));
     return true;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
