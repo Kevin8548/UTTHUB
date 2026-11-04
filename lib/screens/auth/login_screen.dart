@@ -29,7 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isSubmitting = true);
     await context.read<UserProvider>().login(
+<<<<<<< HEAD
+      email: _emailController.text.trim(),
+=======
       email: _emailController.text,
+>>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
       password: _passwordController.text,
     );
     setState(() => _isSubmitting = false);
@@ -77,7 +81,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   keyboardType: TextInputType.emailAddress,
                   style: TextStyle(color: colors.textPrimary),
                   validator: (value) => (value == null || !value.contains('@'))
+<<<<<<< HEAD
+                      ? 'Correo institucional inválido'
+=======
                       ? 'Correo inválido'
+>>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
                       : null,
                   decoration: InputDecoration(
                     labelText: 'Correo institucional',
@@ -95,7 +103,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: _obscure,
                   style: TextStyle(color: colors.textPrimary),
                   validator: (value) => (value == null || value.isEmpty)
+<<<<<<< HEAD
+                      ? 'Ingresa tu contraseña'
+=======
                       ? 'Campo requerido'
+>>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
                       : null,
                   decoration: InputDecoration(
                     labelText: 'Contraseña',
@@ -137,7 +149,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 12),
                 Center(
                   child: Text(
+<<<<<<< HEAD
+                    'Modo de prueba: cualquier correo institucional funciona',
+=======
                     'Modo de prueba: cualquier correo y contraseña funcionan',
+>>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
@@ -149,4 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 3e969c453fb40865bf3412f0927af8c6ecab8631
