@@ -71,6 +71,10 @@ class ScheduleProvider extends ChangeNotifier {
   Future<void> updateItem(ScheduleItemModel item) async {
     _items = _items.map((i) => i.id == item.id ? item : i).toList();
     await _storageService.saveScheduleItems(_items);
+    if (_notified.contains(item.id)) {
+      await _notificationService.cancelNotification(item.id.hashCode);
+      await _scheduleNotificationFor(item);
+    }
     notifyListeners();
   }
 

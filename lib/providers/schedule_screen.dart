@@ -190,13 +190,28 @@ class _ScheduleScreenState extends State<ScheduleScreen>
       await scheduleProvider.updateItem(
         existing.copyWith(
           subject: subjectController.text.trim(),
-          professor: professorController.text.trim(),
+          professor: professorController.text.trim().isEmpty
+              ? 'Por asignar'
+              : professorController.text.trim(),
           day: day,
           startTime: fmt(startTime),
           endTime: fmt(endTime),
-          classroom: classroomController.text.trim(),
+          classroom: classroomController.text.trim().isEmpty
+              ? 'Por asignar'
+              : classroomController.text.trim(),
         ),
       );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Clase "${subjectController.text.trim()}" actualizada con éxito',
+            ),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: colors.surface,
+          ),
+        );
+      }
     }
   }
 
