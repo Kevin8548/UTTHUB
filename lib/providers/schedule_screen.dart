@@ -215,6 +215,54 @@ class _ScheduleScreenState extends State<ScheduleScreen>
     }
   }
 
+  Future<void> _confirmDelete(
+    BuildContext context,
+    ScheduleItemModel item,
+  ) async {
+    final colors = context.colors;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: colors.surface,
+        title: Text(
+          'Eliminar clase',
+          style: TextStyle(color: colors.textPrimary),
+        ),
+        content: Text(
+          '¿Estás seguro de que deseas eliminar la clase "${item.subject}"?',
+          style: TextStyle(color: colors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: colors.coral,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      await context.read<ScheduleProvider>().removeItem(item);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Clase "${item.subject}" eliminada'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: colors.surface,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheduleProvider = context.watch<ScheduleProvider>();
@@ -394,7 +442,7 @@ class _ScheduleScreenState extends State<ScheduleScreen>
                                       color: colors.textMuted,
                                     ),
                                     onPressed: () =>
-                                        scheduleProvider.removeItem(item),
+                                        _confirmDelete(context, item),
                                   ),
                                 IconButton(
                                   icon: Icon(
